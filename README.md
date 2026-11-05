@@ -2,6 +2,8 @@
 
 ## From WSL2 to Native Windows and NVIDIA Jetson Nano
 
+ [lerobot](https://github.com/huggingface/lerobot)
+
 一个关于 SO-ARM101 双机械臂部署、遥操作、视觉采集与 LeRobot 环境迁移的实践记录。
 
 本项目记录了从最初在 Windows 11 的 WSL2 Ubuntu 环境中运行 LeRobot，到迁移至 Windows 原生环境，再到 NVIDIA Jetson Nano 部署的完整过程。
