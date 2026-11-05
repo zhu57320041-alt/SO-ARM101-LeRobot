@@ -30,7 +30,9 @@
 | Camera 1           | Hikvision 2K USB Camera  |
 | Camera 2           | USB Camera               |
 | Main Computer      | Windows 11 Laptop        |
-| Edge Device        | NVIDIA Jetson Nano       |
+| Edge Device        | NVIDIA Jetson Orin Nano       |
+
+摄像头均为USB2.0
 
 ### Software
 
@@ -51,13 +53,15 @@
 
 1. WSL2 Ubuntu：完成机械臂底层配置和主从遥操作。
 2. Native Windows：尝试脱离 WSL2，在 Windows 原生环境完成机械臂控制和视觉数据采集。
-3. NVIDIA Jetson Nano：将 LeRobot 部署到边缘计算设备，探索本地视觉采集和数据集录制。
+3. NVIDIA Jetson Orin Nano：将 LeRobot 部署到边缘计算设备，探索本地视觉采集和数据集录制。
 
 ---
 
 # 2. Stage 1 — WSL2 Ubuntu Deployment
 
 ## 2.1 Environment Setup
+
+- [MakerGuides - SO-ARM101 on Windows 11](https://www.makerguides.com/getting-started-so-arm101-win11/)
 
 最初选择在 Windows 11 上通过 WSL2 运行 Ubuntu，并使用 Miniforge / Conda 管理 Python 环境。
 
@@ -135,11 +139,13 @@ WSL2 阶段已经实现了机械臂遥操作，但后续计划进一步开展：
 * LeRobot Dataset 录制。
 * 日常机械臂控制。
 
-考虑到 USB 设备映射、摄像头访问和 Windows 本地工作流，希望直接在 Windows 原生环境运行 LeRobot。
+考虑到 USB 设备映射、usbipd损耗（windows报USB资源不足）、摄像头访问和 Windows 本地工作流，考虑直接在 Windows 原生环境运行 LeRobot。
 
 因此开始从 WSL2 迁移到 Windows 11。
 
 ## 3.2 Environment Setup
+
+- [环境搭建（Windows）](https://wiki.juxitech.com/zh-hans/tutorials/robot-arms/so-arm-amazinghand/01-Environment-Setup-Windows)
 
 使用 Miniforge 在 Windows 原生环境中建立独立 Conda 环境。
 
@@ -254,6 +260,9 @@ Windows 下使用 OpenCV 检测 USB 摄像头。
 
 针对 Windows 环境下的双 USB 摄像头并发采集问题，整理并提交了 GitHub Issue。
 
+- [[Windows] Unstable Concurrent Capture from Two USB 2.0 UVC Cameras (One Camera Drops to ~1 FPS)
+ ](https://github.com/huggingface/lerobot/issues/5193)
+
 主要描述：
 
 * Windows 11 环境。
@@ -264,13 +273,15 @@ Windows 下使用 OpenCV 检测 USB 摄像头。
 
 ---
 
-# 4. Stage 3 — NVIDIA Jetson Nano Deployment
+# 4. Stage 3 — NVIDIA Jetson Orin Nano Deployment
 
 ## 4.1 Deployment Motivation
 
-在完成 Windows 原生环境迁移和摄像头测试后，开始尝试将 LeRobot 部署到 NVIDIA Jetson Nano。
+- [ravediamond/lerobot-jetson](https://github.com/ravediamond/lerobot-jetson)
 
-希望将机械臂控制、视觉采集等任务逐步转移到边缘计算设备上，减少对个人电脑的依赖。
+在完成 Windows 原生环境迁移和摄像头测试后，开始尝试将 LeRobot 部署到 NVIDIA Jetson Orin Nano。
+
+希望将机械臂控制、视觉采集等任务逐步转移到边缘计算设备上，减少对个人电脑的依赖(主要是windows上双摄太抽风了，分辨率又降不下去)。
 
 ## 4.2 Docker Deployment
 
@@ -295,11 +306,13 @@ ghcr.io/ravediamond/lerobot-jetson:latest
 0.6.2
 ```
 
-确认 Jetson Nano 容器内已经成功运行 LeRobot 0.6.2。
+确认 Jetson Orin Nano 容器内已经成功运行 LeRobot 0.6.2。
+
+- 但发现Jetson上原来的校准文件复制到原目录下无法识别此文件，所以又重新校准了一次，不过这次却发现6号舵机对不齐的问题，稳定偏差，暂未解决
 
 ## 4.3 Camera Testing
 
-开始在 Jetson Nano 上测试 USB 摄像头。
+开始在 Jetson Orin Nano 上测试 USB 摄像头。
 
 主要测试设备：
 
@@ -397,6 +410,7 @@ ghcr.io/ravediamond/lerobot-jetson:latest
 
 ### In Progress
 
+* [ ] 解决6号舵机偏移的问题
 * [ ] Jetson 双摄像头稳定采集
 * [ ] 完整 Dataset 录制流程
 * [ ] 多 Episode 数据采集
@@ -425,7 +439,7 @@ ghcr.io/ravediamond/lerobot-jetson:latest
 
 4. **边缘设备部署需要关注实际运行表现。**
 
-   Jetson Nano 能够运行 LeRobot，并不意味着所有视觉采集任务都能够稳定执行。
+   Jetson Orin Nano 能够运行 LeRobot，并不意味着所有视觉采集任务都能够稳定执行。
 
 ---
 
@@ -448,6 +462,8 @@ ghcr.io/ravediamond/lerobot-jetson:latest
 - [MakerGuides - SO-ARM101 on Windows 11](https://www.makerguides.com/getting-started-so-arm101-win11/)
 
 ### LeRobot
+- [[Windows] Unstable Concurrent Capture from Two USB 2.0 UVC Cameras (One Camera Drops to ~1 FPS)
+ ](https://github.com/huggingface/lerobot/issues/5193)
 - [LeRobot Official Repository](https://github.com/huggingface/lerobot)
 - [LeRobot v0.6.1 Source Code](https://github.com/huggingface/lerobot/tree/v0.6.1)
 - [LeRobot v0.6.0 Installation](https://huggingface.co/docs/lerobot/v0.6.0/installation)
