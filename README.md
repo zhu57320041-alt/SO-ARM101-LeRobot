@@ -1,6 +1,6 @@
 # SO-ARM101 × LeRobot
 
-## From WSL2 to Native Windows and NVIDIA Jetson Nano
+## From WSL2 to Native Windows and NVIDIA Jetson Orin Nano
 
  [lerobot](https://github.com/huggingface/lerobot)
 
