@@ -486,45 +486,50 @@ Dropping old static log messages.
 
 # 6. Current Progress
 
-截至 2026 年 11 月：
+截至 2026 年 11 月 13 日：
 
 ### Completed
 
-* [x] WSL2 Ubuntu 环境搭建
-* [x] LeRobot 0.6.1 部署
-* [x] Leader / Follower 舵机识别
-* [x] 双机械臂校准
-* [x] 主从机械臂遥操作
-* [x] Windows 原生 Python 环境搭建
-* [x] Windows 串口识别
-* [x] 校准文件迁移
-* [x] 双摄像头设备识别与单路测试
-* [x] 双摄像头并发异常排查
-* [x] GitHub Issue 提交
-* [x] Jetson Nano Docker 环境部署
-* [x] Jetson Nano LeRobot 0.6.2 运行
-* [x] Jetson 摄像头单路采集测试
+- [x] WSL2 Ubuntu 环境搭建
+- [x] LeRobot 0.6.1 部署
+- [x] Leader / Follower 舵机识别
+- [x] 双机械臂校准
+- [x] 主从机械臂遥操作
+- [x] Windows 原生 Python 环境搭建
+- [x] Windows 串口识别
+- [x] 校准文件迁移
+- [x] 双摄像头设备识别与单路测试
+- [x] Windows 双摄像头并发异常排查
+- [x] GitHub Issue 提交
+- [x] Jetson Orin Nano Docker 环境部署
+- [x] Jetson Orin Nano LeRobot 0.6.2 运行
+- [x] Jetson 机械臂重新校准
+- [x] Jetson 摄像头单路采集测试
+- [x] Jetson 系统内存及 CMA 使用情况检查
 
 ### In Progress
 
-* [ ] 解决6号舵机偏移的问题
-* [ ] Jetson 双摄像头稳定采集
-* [ ] 完整 Dataset 录制流程
-* [ ] 多 Episode 数据采集
-* [ ] Dataset 完整性检查
-* [ ] 后续模型训练与验证
+- [ ] 解决 6 号舵机位置偏差
+- [ ] Jetson 双摄像头稳定采集
+- [ ] Rerun 版本及 gRPC 内存问题排查
+- [ ] 完整 Dataset 录制流程验证
+- [ ] 多 Episode 数据采集
+- [ ] Dataset 完整性检查
+- [ ] ACT 模型训练与验证
+- [ ] CUDA / NvMap 内存分配问题排查
+- [ ] Jetson 系统升级及环境兼容性验证
 
 ---
 
 # 7. Lessons Learned
 
-这次部署过程涉及的不仅是软件安装，还包括硬件、操作系统、通信接口和视觉采集之间的协同。
+这次部署过程涉及的不仅是软件安装，还包括硬件、操作系统、通信接口、视觉采集和模型训练之间的协同。
 
 几个比较重要的经验：
 
 1. **环境迁移不等于简单复制配置。**
 
-   Linux、Windows 和 Jetson 在串口、USB 设备访问、依赖管理等方面存在差异，需要分别验证。
+   Linux、Windows 和 Jetson 在串口、USB 设备访问、依赖管理等方面存在差异。即使校准文件能够复制，也不代表新环境一定能够直接识别和使用。
 
 2. **机械臂控制与视觉采集需要分开验证。**
 
@@ -532,11 +537,19 @@ Dropping old static log messages.
 
 3. **FPS 不完全代表视频质量。**
 
-   摄像头即使能够达到接近目标的帧率，也可能出现卡顿、帧间隔不稳定等问题。
+   摄像头即使能够达到接近目标的帧率，也可能出现卡顿、帧间隔不稳定等问题。需要结合实际录制结果进行判断。
 
 4. **边缘设备部署需要关注实际运行表现。**
 
-   Jetson Orin Nano 能够运行 LeRobot，并不意味着所有视觉采集任务都能够稳定执行。
+   Jetson Orin Nano 能够运行 LeRobot，并不意味着所有视觉采集和模型训练任务都能够稳定执行。
+
+5. **系统内存、GPU 内存与存储空间需要区分。**
+
+   RAM、CMA、GPU 内存和 SSD 分别承担不同作用。增加磁盘容量不能直接解决 GPU 内存分配问题，需要结合具体报错定位。
+
+6. **数据采集成功不等于训练流程已经打通。**
+
+   Dataset 生成之后，还需要检查视频、机器人状态、时间戳及 Episode 完整性。只有数据格式和内容满足训练要求，才能进一步开展模型训练。
 
 ---
 
@@ -544,12 +557,16 @@ Dropping old static log messages.
 
 后续计划：
 
-* 完善 Jetson Nano 双摄像头采集。
-* 完成 SO-ARM101 数据集录制。
+* 排查并解决 6 号舵机的位置偏差。
+* 完善 Jetson Orin Nano 双摄像头采集。
+* 完成 SO-ARM101 多 Episode 数据集录制。
 * 检查视频与机器人状态数据的一致性。
-* 建立稳定的数据采集流程。
+* 解决 Rerun 可视化及内存限制问题。
+* 进一步排查 CUDA / NvMap 内存分配问题。
+* 验证 Jetson 系统升级后的环境兼容性。
+* 完成 ACT 模型训练与验证。
+* 建立稳定的数据采集与训练流程。
 * 探索 LeRobot 模型训练及实际部署。
-
 ---
 
 ## References
