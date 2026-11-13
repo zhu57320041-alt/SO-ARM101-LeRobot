@@ -354,21 +354,110 @@ ghcr.io/ravediamond/lerobot-jetson:latest
 
 双摄像头并发采集和实际录制稳定性仍需进一步验证。
 
-## 4.4 Video Recording
+## 4.4 Video Recording and Dataset Collection
 
 进一步尝试使用 LeRobot 的数据录制功能。
 
 重点了解：
 
-* 如何启动录制界面。
+* 如何启动录制程序。
 * 如何配置摄像头。
+* 如何连接 Leader / Follower。
 * 如何开始和结束 Episode。
 * 如何生成视频文件。
 * 如何检查录制结果。
 * 如何删除无用的录制数据。
 
-逐步从单纯的摄像头测试转向实际 Dataset 采集。
+目前已经开始从单纯的摄像头测试转向实际 Dataset 采集。
 
+期间进行了多轮录制测试，并开始检查摄像头数据与机械臂状态数据的记录情况。
+
+后续仍需重点验证：
+
+- 多摄像头是否能够稳定并发采集。
+- Episode 是否能够正常结束和保存。
+- 视频文件是否完整。
+- 机器人状态数据与视频时间戳是否一致。
+- Dataset 是否满足后续 ACT 模型训练要求。
+
+## 4.5 Rerun Visualization Issues
+
+在使用 LeRobot Record 进行数据采集时，还涉及 Rerun 可视化组件。
+
+期间遇到了 Rerun 相关问题，包括版本兼容性和 gRPC Proxy 内存限制。
+
+曾出现以下提示：
+
+```text
+Exceeded gRPC proxy server memory limit (1.0GiB).
+Dropping old static log messages.
+```
+
+提示表明 Rerun gRPC Proxy 达到了 1.0 GiB 的内存限制，开始丢弃较早的静态日志数据。
+
+需要注意，这并不直接代表 Jetson 整机 RAM 已经耗尽。
+
+目前主要排查方向：
+
+1. Rerun 与 LeRobot 的版本兼容性。
+2. gRPC Proxy 内存限制。
+3. 静态日志和数据流缓存。
+4. 长时间录制时的内存占用。
+5. 可视化服务对数据采集的影响。
+
+目前仍需进一步验证 Rerun 在长时间录制过程中的稳定性。
+
+## 4.6 ACT Training and Memory Allocation Issues
+
+在尝试进一步开展 LeRobot ACT 模型训练时，还需要关注 Jetson 的系统内存和 GPU 内存分配情况。
+
+此前排查过程中出现了 Rerun gRPC Proxy 内存限制提示，因此需要区分不同层面的内存问题：
+
+- 系统 RAM：影响系统及应用程序的整体内存使用。
+- GPU 内存：用于 CUDA 计算及模型训练。
+- CMA：用于部分需要连续物理内存的分配场景。
+- Swap：利用存储设备扩展虚拟内存。
+- SSD：主要用于扩展数据和模型文件的存储空间。
+
+目前不能仅凭 Rerun 的 1.0 GiB 限制提示，就认定 Jetson 整机 RAM 已经耗尽。
+
+### System Information
+
+当前设备及系统信息：
+
+- NVIDIA Jetson Orin Nano 8GB
+- Jetson Linux R36.4.7
+- Docker-based LeRobot 0.6.2
+
+目前仍需进一步确认系统版本与 JetPack 的对应关系，以及 CUDA、NvMap 等组件的实际运行情况。
+
+### Investigation
+
+目前重点排查方向：
+
+1. Jetson Linux / JetPack 系统版本。
+2. CUDA 内存分配。
+3. NvMap 内存分配机制。
+4. CMA 连续内存资源。
+5. ACT 训练过程中的 GPU 内存需求。
+6. Swap 与系统内存使用情况。
+
+后续考虑通过系统升级和环境重新验证，排查是否存在系统组件兼容性问题。
+
+目前尚未确认具体原因，也不能确定升级系统一定能够解决问题。
+
+### SSD Expansion
+
+期间还讨论了增加 512GB SSD 的可能性。
+
+需要区分：
+
+- SSD 可以扩展 Dataset、视频和模型文件的存储空间。
+- SSD 可以用于扩展 Swap。
+- SSD 不会增加物理 RAM。
+- SSD 不能直接增加 GPU 显存或 CMA 连续内存。
+
+因此，增加 SSD 有利于后续数据存储和 Swap 管理，但不能直接解决 GPU 内存分配异常。
 ---
 
 # 5. Problems and Solutions
