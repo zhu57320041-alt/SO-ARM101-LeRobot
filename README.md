@@ -354,30 +354,26 @@ ghcr.io/ravediamond/lerobot-jetson:latest
 
 双摄像头并发采集和实际录制稳定性仍需进一步验证。
 
-## 4.4 Video Recording and Dataset Collection
+4.4 Video Recording and Dataset Collection
 
-进一步尝试使用 LeRobot 的数据录制功能。
+进一步使用 LeRobot 的 Record 功能进行实际数据采集。
 
-重点了解：
+完成了以下工作：
 
-* 如何启动录制程序。
-* 如何配置摄像头。
-* 如何连接 Leader / Follower。
-* 如何开始和结束 Episode。
-* 如何生成视频文件。
-* 如何检查录制结果。
-* 如何删除无用的录制数据。
+* 启动 LeRobot 录制程序。
+* 配置摄像头及机械臂连接。
+* 开始和结束 Episode。
+* 生成视频文件及机器人状态数据。
+* 检查录制结果。
+* 清理无用的录制数据。
 
-目前已经开始从单纯的摄像头测试转向实际 Dataset 采集。
-
-期间进行了多轮录制测试，并开始检查摄像头数据与机械臂状态数据的记录情况。
+经过多轮测试，已经成功完成 25 个数据集的录制，初步打通了从机械臂遥操作到视觉数据采集的流程。
 
 后续仍需重点验证：
 
-- 多摄像头是否能够稳定并发采集。
-- Episode 是否能够正常结束和保存。
-- 视频文件是否完整。
-- 机器人状态数据与视频时间戳是否一致。
+- 多摄像头长时间并发采集的稳定性。
+- 视频文件及机器人状态数据的完整性。
+- 视频与机器人状态数据的时间戳一致性。
 - Dataset 是否满足后续 ACT 模型训练要求。
 
 ## 4.5 Rerun Visualization Issues
@@ -477,7 +473,7 @@ Dropping old static log messages.
 | Dataset 录制流程           | 开始测试 LeRobot Record 功能   | In Progress        |
 | Jetson 双路采集稳定性 | 进行双路采集和实际录制测试 | Investigating |
 | Rerun gRPC 内存限制 | 检查 Proxy 内存限制及日志缓存 | Investigating |
-| Dataset 录制流程 | 开展实际 Dataset / Episode 录制 | In Progress |
+| Dataset 录制流程 | 已成功完成 25 个数据集的录制 | Completed |
 | Dataset 完整性检查 | 检查视频、状态数据和时间戳 | In Progress |
 | ACT 模型训练 | 进一步验证训练环境及 GPU 内存分配 | In Progress |
 | Jetson 系统版本问题 | 排查系统组件及版本兼容性 | Investigating |
@@ -505,6 +501,8 @@ Dropping old static log messages.
 - [x] Jetson Orin Nano LeRobot 0.6.2 运行
 - [x] Jetson 机械臂重新校准
 - [x] Jetson 摄像头单路采集测试
+- [x] LeRobot Dataset 录制流程跑通
+- [x] 成功录制 25 个数据集
 - [x] Jetson 系统内存及 CMA 使用情况检查
 
 ### In Progress
@@ -512,8 +510,8 @@ Dropping old static log messages.
 - [ ] 解决 6 号舵机位置偏差
 - [ ] Jetson 双摄像头稳定采集
 - [ ] Rerun 版本及 gRPC 内存问题排查
-- [ ] 完整 Dataset 录制流程验证
-- [ ] 多 Episode 数据采集
+- [ ] Dataset 完整性检查
+- [ ] 多 Episode 数据采集与质量验证
 - [ ] Dataset 完整性检查
 - [ ] ACT 模型训练与验证
 - [ ] CUDA / NvMap 内存分配问题排查
@@ -595,4 +593,5 @@ Dropping old static log messages.
 **Project Status: Active Development**
 
 记录日期：2026-11-05
+更新日期：2026-11-13
 
