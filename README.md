@@ -475,7 +475,13 @@ Dropping old static log messages.
 | Jetson 摄像头帧率不稳定        | 调整分辨率并进行单路测试             | Partially Resolved |
 | Jetson 双路采集稳定性         | 仍需进一步测试                  | Investigating      |
 | Dataset 录制流程           | 开始测试 LeRobot Record 功能   | In Progress        |
-
+| Jetson 双路采集稳定性 | 进行双路采集和实际录制测试 | Investigating |
+| Rerun gRPC 内存限制 | 检查 Proxy 内存限制及日志缓存 | Investigating |
+| Dataset 录制流程 | 开展实际 Dataset / Episode 录制 | In Progress |
+| Dataset 完整性检查 | 检查视频、状态数据和时间戳 | In Progress |
+| ACT 模型训练 | 进一步验证训练环境及 GPU 内存分配 | In Progress |
+| Jetson 系统版本问题 | 排查系统组件及版本兼容性 | Investigating |
+| SSD 扩容 | 评估数据存储和 Swap 扩展 | Pending |
 ---
 
 # 6. Current Progress
